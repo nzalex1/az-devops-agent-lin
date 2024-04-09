@@ -1,10 +1,11 @@
 FROM ubuntu:20.04
+ARG DEBIAN_FRONTEND=noninteractive 
 ARG node_default_version="18"
 
-RUN DEBIAN_FRONTEND=noninteractive apt-get update
-RUN DEBIAN_FRONTEND=noninteractive apt-get upgrade -y
+RUN apt-get update
+RUN apt-get upgrade -y
 
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends \
+RUN apt-get install -y -qq --no-install-recommends \
     apt-transport-https \
     apt-utils \
     ca-certificates \
@@ -47,11 +48,10 @@ RUN bicep --help
 RUN curl -fsSL https://raw.githubusercontent.com/tj/n/master/bin/n -o ~/n
 RUN bash ~/n "$node_default_version"
 # Installing node modules
-RUN npm install -g grunt gulp n parcel tsc newman vercel webpack webpack-cli netlify lerna yarn
+# RUN npm install -g grunt gulp n parcel tsc newman vercel webpack webpack-cli netlify lerna yarn
 RUN echo "Creating the symlink for [now] command to vercel CLI"
 RUN ln -s /usr/local/bin/vercel /usr/local/bin/now
-# fix global modules installation as regular user
-# related issue https://github.com/actions/runner-images/issues/3727
+# fix global modules installation as regular user; related issue https://github.com/actions/runner-images/issues/3727
 RUN chmod -R 777 /usr/local/lib/node_modules 
 RUN chmod -R 777 /usr/local/bin
 RUN rm -rf ~/n
