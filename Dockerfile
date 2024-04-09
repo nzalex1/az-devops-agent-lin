@@ -47,18 +47,22 @@ ARG DOTNET_CLI_TELEMETRY_OPTOUT=1
 COPY scripts/apt_preferences_dotnet.txt /etc/apt/preferences.d/dotnet
 RUN DEBIAN_FRONTEND=noninteractive apt-get update
 
+RUN apt-get install dotnet-sdk-6.0 -y
+RUN apt-get install dotnet-sdk-7.0 -y
+RUN apt-get install dotnet-sdk-8.0 -y
+
 # Installing NODE.JS
 
 # RUN curl -fsSL https://raw.githubusercontent.com/tj/n/master/bin/n -o ~/n
 # RUN bash ~/n "$node_default_version"
 # Installing node modules
 # RUN npm install -g grunt gulp n parcel tsc newman vercel webpack webpack-cli netlify lerna yarn
-RUN echo "Creating the symlink for [now] command to vercel CLI"
-RUN ln -s /usr/local/bin/vercel /usr/local/bin/now
+# RUN echo "Creating the symlink for [now] command to vercel CLI"
+# RUN ln -s /usr/local/bin/vercel /usr/local/bin/now
 # fix global modules installation as regular user; related issue https://github.com/actions/runner-images/issues/3727
-RUN chmod -R 777 /usr/local/lib/node_modules 
-RUN chmod -R 777 /usr/local/bin
-RUN rm -rf ~/n
+# RUN chmod -R 777 /usr/local/lib/node_modules 
+# RUN chmod -R 777 /usr/local/bin
+# RUN rm -rf ~/n
 
 
 
