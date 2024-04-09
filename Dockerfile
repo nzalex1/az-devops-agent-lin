@@ -33,7 +33,7 @@ RUN dpkg-reconfigure --frontend noninteractive tzdata
 RUN apt-get -y install powershell
 
 # Installing Azure Powershell module
-# RUN pwsh -c "Install-Module -Name Az -Scope CurrentUser -Repository PSGallery -Force"
+RUN pwsh -c "Install-Module -Name Az -Scope CurrentUser -Repository PSGallery -Force"
 
 # Installing bicep
 RUN curl -Lo bicep https://github.com/Azure/bicep/releases/latest/download/bicep-linux-x64
