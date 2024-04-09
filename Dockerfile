@@ -66,7 +66,7 @@ RUN dotnet tool install GitVersion.Tool --version 5.* --tool-path '/etc/skel/.do
 RUN curl -fsSL https://raw.githubusercontent.com/tj/n/master/bin/n -o ~/n
 RUN bash ~/n "$node_default_version"
 # Installing node modules
-RUN npm install -g grunt gulp n parcel tsc newman vercel webpack webpack-cli netlify lerna yarn
+# RUN npm install -g grunt gulp n parcel tsc newman vercel webpack webpack-cli netlify lerna yarn
 RUN echo "Creating the symlink for [now] command to vercel CLI"
 RUN ln -s /usr/local/bin/vercel /usr/local/bin/now
 # fix global modules installation as regular user; related issue https://github.com/actions/runner-images/issues/3727
