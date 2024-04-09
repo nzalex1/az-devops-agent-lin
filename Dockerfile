@@ -2,10 +2,10 @@ FROM ubuntu:20.04
 ARG DEBIAN_FRONTEND=noninteractive 
 ARG node_default_version="18"
 
-RUN apt-get update
-RUN apt-get upgrade -y
+RUN DEBIAN_FRONTEND=noninteractive apt-get update
+RUN DEBIAN_FRONTEND=noninteractive apt-get upgrade -y
 
-RUN apt-get install -y -qq --no-install-recommends \
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends \
     apt-transport-https \
     apt-utils \
     ca-certificates \
@@ -24,10 +24,9 @@ RUN apt-get install -y -qq --no-install-recommends \
 # Installing MS dependencies and powershell
 RUN wget -q https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
 RUN dpkg -i packages-microsoft-prod.deb
-RUN apt-get -y update
+RUN DEBIAN_FRONTEND=noninteractive apt-get -y update
 
-ARG DEBIAN_FRONTEND=noninteractive
-RUN apt-get install -y tzdata
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y tzdata
 RUN ln -fs /usr/share/zoneinfo/Australia/Sydney /etc/localtime
 RUN dpkg-reconfigure --frontend noninteractive tzdata
 
@@ -43,10 +42,15 @@ RUN mv ./bicep /usr/local/bin/bicep
 RUN bicep --help
 
 
+# Installing Dotnet
+ARG DOTNET_CLI_TELEMETRY_OPTOUT=1
+COPY scripts/apt_preferences_dotnet.txt /etc/apt/preferences.d/dotnet
+RUN RUN DEBIAN_FRONTEND=noninteractive apt-get update
+
 # Installing NODE.JS
 
-RUN curl -fsSL https://raw.githubusercontent.com/tj/n/master/bin/n -o ~/n
-RUN bash ~/n "$node_default_version"
+# RUN curl -fsSL https://raw.githubusercontent.com/tj/n/master/bin/n -o ~/n
+# RUN bash ~/n "$node_default_version"
 # Installing node modules
 # RUN npm install -g grunt gulp n parcel tsc newman vercel webpack webpack-cli netlify lerna yarn
 RUN echo "Creating the symlink for [now] command to vercel CLI"
@@ -55,6 +59,8 @@ RUN ln -s /usr/local/bin/vercel /usr/local/bin/now
 RUN chmod -R 777 /usr/local/lib/node_modules 
 RUN chmod -R 777 /usr/local/bin
 RUN rm -rf ~/n
+
+
 
 
 # RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash -
