@@ -31,7 +31,7 @@ RUN dpkg-reconfigure --frontend noninteractive tzdata
 RUN apt-get -y install powershell
 
 # Installing Azure Powershell module
-RUN pwsh -c "Install-Module -Name Az -Scope CurrentUser -Repository PSGallery -Force"
+#RUN pwsh -c "Install-Module -Name Az -Scope CurrentUser -Repository PSGallery -Force"
 
 # Installing bicep
 RUN curl -Lo bicep https://github.com/Azure/bicep/releases/latest/download/bicep-linux-x64
@@ -39,17 +39,35 @@ RUN chmod +x ./bicep
 RUN mv ./bicep /usr/local/bin/bicep
 RUN bicep --help
 
-# Installing Node versions
-RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash -
-RUN curl -fsSL https://deb.nodesource.com/setup_17.x | bash -
-RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
-RUN curl -fsSL https://deb.nodesource.com/setup_19.x | bash -
-RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
-RUN curl -fsSL https://deb.nodesource.com/setup_21.x | bash -
+# Installing node.js
+# Installing v.18 to comply with how this done by MS for their public agents
+RUN default_version="18"
+RUN curl -fsSL https://raw.githubusercontent.com/tj/n/master/bin/n -o ~/n
+RUN bash ~/n $default_version
+# Installing node modules
+RUN npm install -g grunt gulp n parcel tsc newman vercel webpack webpack-cli netlify lerna yarn
+RUN echo "Creating the symlink for [now] command to vercel CLI"
+RUN ln -s /usr/local/bin/vercel /usr/local/bin/now
+# fix global modules installation as regular user
+# related issue https://github.com/actions/runner-images/issues/3727
+RUN sudo chmod -R 777 /usr/local/lib/node_modules 
+RUN sudo chmod -R 777 /usr/local/bin
+
+RUN rm -rf ~/n
+
+
+# RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash -
+# RUN curl -fsSL https://deb.nodesource.com/setup_17.x | bash -
+# RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
+# RUN curl -fsSL https://deb.nodesource.com/setup_19.x | bash -
+# RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+# RUN curl -fsSL https://deb.nodesource.com/setup_21.x | bash -
+
+
 
 # Installing az and bicep in az
-RUN curl -sL https://aka.ms/InstallAzureCLIDeb | bash
-RUN az bicep install
+#RUN curl -sL https://aka.ms/InstallAzureCLIDeb | bash
+#RUN az bicep install
 
 # Cleaning up
 RUN rm -rf /var/lib/apt/lists/*
