@@ -33,7 +33,7 @@ RUN dpkg-reconfigure --frontend noninteractive tzdata
 RUN apt-get -y install powershell
 
 # Installing Azure Powershell module
-RUN pwsh -c "Install-Module -Name Az -Scope CurrentUser -Repository PSGallery -Force"
+# RUN pwsh -c "Install-Module -Name Az -Scope CurrentUser -Repository PSGallery -Force"
 
 # Installing bicep
 RUN curl -Lo bicep https://github.com/Azure/bicep/releases/latest/download/bicep-linux-x64
@@ -60,10 +60,9 @@ ARG DOTNET_NOLOGO=1
 ARG DOTNET_MULTILEVEL_LOOKUP=0
 # prepend_etc_environment_path '$HOME/.dotnet/tools'
 RUN dotnet tool install nbgv --tool-path '/etc/skel/.dotnet/tools'
-RUN dotnet tool install getversion --tool-path '/etc/skel/.dotnet/tools'
+RUN dotnet tool install GitVersion.Tool --version 5.* --tool-path '/etc/skel/.dotnet/tools'
 
 # Installing NODE.JS
-
 RUN curl -fsSL https://raw.githubusercontent.com/tj/n/master/bin/n -o ~/n
 RUN bash ~/n "$node_default_version"
 # Installing node modules
