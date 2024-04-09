@@ -45,7 +45,7 @@ RUN bicep --help
 # Installing Dotnet
 ARG DOTNET_CLI_TELEMETRY_OPTOUT=1
 COPY scripts/apt_preferences_dotnet.txt /etc/apt/preferences.d/dotnet
-RUN RUN DEBIAN_FRONTEND=noninteractive apt-get update
+RUN DEBIAN_FRONTEND=noninteractive apt-get update
 
 # Installing NODE.JS
 
