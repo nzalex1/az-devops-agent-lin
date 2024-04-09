@@ -1,4 +1,6 @@
 FROM ubuntu:20.04
+ARG node_default_version="18"
+
 RUN DEBIAN_FRONTEND=noninteractive apt-get update
 RUN DEBIAN_FRONTEND=noninteractive apt-get upgrade -y
 
@@ -28,7 +30,7 @@ RUN apt-get install -y tzdata
 RUN ln -fs /usr/share/zoneinfo/Australia/Sydney /etc/localtime
 RUN dpkg-reconfigure --frontend noninteractive tzdata
 
-RUN apt-get -y install powershell
+# RUN apt-get -y install powershell
 
 # Installing Azure Powershell module
 #RUN pwsh -c "Install-Module -Name Az -Scope CurrentUser -Repository PSGallery -Force"
@@ -39,20 +41,19 @@ RUN chmod +x ./bicep
 RUN mv ./bicep /usr/local/bin/bicep
 RUN bicep --help
 
-# Installing node.js
-# Installing v.18 to comply with how this done by MS for their public agents
-ARG default_version="18"
+
+# Installing NODE.JS
+
 RUN curl -fsSL https://raw.githubusercontent.com/tj/n/master/bin/n -o ~/n
-RUN bash ~/n "$default_version"
+RUN bash ~/n "$node_default_version"
 # Installing node modules
 RUN npm install -g grunt gulp n parcel tsc newman vercel webpack webpack-cli netlify lerna yarn
 RUN echo "Creating the symlink for [now] command to vercel CLI"
 RUN ln -s /usr/local/bin/vercel /usr/local/bin/now
 # fix global modules installation as regular user
 # related issue https://github.com/actions/runner-images/issues/3727
-RUN sudo chmod -R 777 /usr/local/lib/node_modules 
-RUN sudo chmod -R 777 /usr/local/bin
-
+RUN chmod -R 777 /usr/local/lib/node_modules 
+RUN chmod -R 777 /usr/local/bin
 RUN rm -rf ~/n
 
 
