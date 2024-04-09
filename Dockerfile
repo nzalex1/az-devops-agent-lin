@@ -51,6 +51,17 @@ RUN apt-get install dotnet-sdk-6.0 -y
 RUN apt-get install dotnet-sdk-7.0 -y
 RUN apt-get install dotnet-sdk-8.0 -y
 
+RUN rm /etc/apt/preferences.d/dotnet
+RUN DEBIAN_FRONTEND=noninteractive apt-get update
+
+# Install .Net tools
+ARG DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1
+ARG DOTNET_NOLOGO=1
+ARG DOTNET_MULTILEVEL_LOOKUP=0
+# prepend_etc_environment_path '$HOME/.dotnet/tools'
+RUN dotnet tool install nbgv --tool-path '/etc/skel/.dotnet/tools'
+
+
 # Installing NODE.JS
 
 # RUN curl -fsSL https://raw.githubusercontent.com/tj/n/master/bin/n -o ~/n
