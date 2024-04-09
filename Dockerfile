@@ -30,10 +30,10 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y tzdata
 RUN ln -fs /usr/share/zoneinfo/Australia/Sydney /etc/localtime
 RUN dpkg-reconfigure --frontend noninteractive tzdata
 
-# RUN apt-get -y install powershell
+RUN apt-get -y install powershell
 
 # Installing Azure Powershell module
-#RUN pwsh -c "Install-Module -Name Az -Scope CurrentUser -Repository PSGallery -Force"
+RUN pwsh -c "Install-Module -Name Az -Scope CurrentUser -Repository PSGallery -Force"
 
 # Installing bicep
 RUN curl -Lo bicep https://github.com/Azure/bicep/releases/latest/download/bicep-linux-x64
@@ -60,23 +60,20 @@ ARG DOTNET_NOLOGO=1
 ARG DOTNET_MULTILEVEL_LOOKUP=0
 # prepend_etc_environment_path '$HOME/.dotnet/tools'
 RUN dotnet tool install nbgv --tool-path '/etc/skel/.dotnet/tools'
-
+RUN dotnet tool install getversion --tool-path '/etc/skel/.dotnet/tools'
 
 # Installing NODE.JS
 
-# RUN curl -fsSL https://raw.githubusercontent.com/tj/n/master/bin/n -o ~/n
-# RUN bash ~/n "$node_default_version"
+RUN curl -fsSL https://raw.githubusercontent.com/tj/n/master/bin/n -o ~/n
+RUN bash ~/n "$node_default_version"
 # Installing node modules
-# RUN npm install -g grunt gulp n parcel tsc newman vercel webpack webpack-cli netlify lerna yarn
-# RUN echo "Creating the symlink for [now] command to vercel CLI"
-# RUN ln -s /usr/local/bin/vercel /usr/local/bin/now
+RUN npm install -g grunt gulp n parcel tsc newman vercel webpack webpack-cli netlify lerna yarn
+RUN echo "Creating the symlink for [now] command to vercel CLI"
+RUN ln -s /usr/local/bin/vercel /usr/local/bin/now
 # fix global modules installation as regular user; related issue https://github.com/actions/runner-images/issues/3727
-# RUN chmod -R 777 /usr/local/lib/node_modules 
-# RUN chmod -R 777 /usr/local/bin
-# RUN rm -rf ~/n
-
-
-
+RUN chmod -R 777 /usr/local/lib/node_modules 
+RUN chmod -R 777 /usr/local/bin
+RUN rm -rf ~/n
 
 # RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash -
 # RUN curl -fsSL https://deb.nodesource.com/setup_17.x | bash -
@@ -85,11 +82,9 @@ RUN dotnet tool install nbgv --tool-path '/etc/skel/.dotnet/tools'
 # RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
 # RUN curl -fsSL https://deb.nodesource.com/setup_21.x | bash -
 
-
-
 # Installing az and bicep in az
-#RUN curl -sL https://aka.ms/InstallAzureCLIDeb | bash
-#RUN az bicep install
+RUN curl -sL https://aka.ms/InstallAzureCLIDeb | bash
+RUN az bicep install
 
 # Cleaning up
 RUN rm -rf /var/lib/apt/lists/*
