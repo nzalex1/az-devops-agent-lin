@@ -41,9 +41,9 @@ RUN bicep --help
 
 # Installing node.js
 # Installing v.18 to comply with how this done by MS for their public agents
-RUN default_version="18"
+ARG default_version="18"
 RUN curl -fsSL https://raw.githubusercontent.com/tj/n/master/bin/n -o ~/n
-RUN bash ~/n $default_version
+RUN bash ~/n "$default_version"
 # Installing node modules
 RUN npm install -g grunt gulp n parcel tsc newman vercel webpack webpack-cli netlify lerna yarn
 RUN echo "Creating the symlink for [now] command to vercel CLI"
